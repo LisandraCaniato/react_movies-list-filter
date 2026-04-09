@@ -6,24 +6,17 @@ import moviesFromServer from './api/movies.json';
 export const App: React.FC = () => {
   const [query, setQuery] = useState('');
 
-  const normalizedQuery = query.trim().toLowerCase();
+ const normalizedQuery = query.trim().toLowerCase();
 
-  const exactMatch = moviesFromServer.filter(
-    movie => movie.title.toLowerCase() === normalizedQuery,
+const visibleMovies = moviesFromServer.filter(movie => {
+  const title = movie.title.toLowerCase();
+  const description = movie.description.toLowerCase();
+
+  return (
+    title.includes(normalizedQuery) ||
+    description.includes(normalizedQuery)
   );
-
-  const visibleMovies =
-    exactMatch.length > 0
-      ? exactMatch
-      : moviesFromServer.filter(movie => {
-          const title = movie.title.toLowerCase();
-          const description = movie.description.toLowerCase();
-
-          return (
-            title.includes(normalizedQuery) ||
-            description.includes(normalizedQuery)
-          );
-        });
+});
 
   return (
     <div className="page">
@@ -41,7 +34,7 @@ export const App: React.FC = () => {
                 className="input"
                 placeholder="Type search word"
                 value={query}
-                onChange={e => setQuery(e.target.value)}
+                onChange={event => setQuery(event.target.value)}
               />
             </div>
           </div>
